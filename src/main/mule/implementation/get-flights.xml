@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="get:\flights:flight-management-sys-api-navneet-config" doc:id="3be2a5cd-2418-474e-8f31-841023f1b950" >
+		<db:select doc:name="Select" doc:id="23d44043-4de3-42c4-943d-53b0541152a9" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from navneet.flights where `from` = :source and `to` = :destination and date = :date]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	source : attributes.queryParams.source,
+	destination : attributes.queryParams.destination,
+	date : attributes.queryParams.date
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="b6f13ff3-bba0-4b64-ab4c-45948a74aa90" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

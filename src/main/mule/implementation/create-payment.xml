@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="post:\payment:application\json:flight-management-sys-api-navneet-config" doc:id="8405e68f-3628-4b7f-b6a6-2cd7c473eed2" >
+		<db:insert doc:name="Insert" doc:id="e6396510-9465-4c79-8be8-4b618524333b" config-ref="Database_Config">
+			<db:sql ><![CDATA[insert into `navneet`.`payment` (`payment_ref_number`, `booking_ref_number`, `amount`, `status`, `payment_date`)
+values (:paymentRefNum, :bookingRefNum, :amount, :status, :paymentDate)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	paymentRefNum : payload.paymentRefNum[0],
+	bookingRefNum : payload.bookingRefNum[0],
+	amount : payload.amount[0],
+	status : payload.status[0],
+	paymentDate : payload.paymentDate[0]
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="8b621099-caac-4c54-9944-294c2121333f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  message: "success",
+  description: "Payment details successfully entered in system"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
